@@ -24,11 +24,12 @@ function getSourceFiles(dir: string): string[] {
 }
 
 /**
- * Parse named imports from `@/lib/constants` in a file's source text.
+ * Parse named imports from constants in a file's source text.
+ * Matches both `@/lib/constants` and relative `./constants` imports.
  * Returns an array of { name, file } for each imported identifier.
  */
 function parseConstantsImports(source: string, filePath: string) {
-  const importRegex = /import\s*\{([^}]+)\}\s*from\s*["']@\/lib\/constants["']/g;
+  const importRegex = /import\s*\{([^}]+)\}\s*from\s*["'](?:@\/lib\/constants|\.\/constants|\.\.\/.*constants)["']/g;
   const results: { name: string; file: string }[] = [];
 
   let match;

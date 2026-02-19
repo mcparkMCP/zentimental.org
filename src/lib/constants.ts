@@ -10,3 +10,5 @@ export const KB_ACCEPTED_FILE_TYPES = ".pdf,.txt,.md,.csv,.json,.js,.ts,.jsx,.ts
 export const KB_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 export const KB_MAX_DOCUMENTS = 50;
 export const KB_TOP_K = 5;
+export const KB_CHUNK_SIZE = 1000;
+export const KB_CHUNK_OVERLAP = 200;
