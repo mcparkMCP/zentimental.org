@@ -95,6 +95,30 @@ export function ChatArea({ conversationId, memories, onFirstMessage }: ChatAreaP
     [sendMessage]
   );
 
+  const handleEditMessage = useCallback(
+    (messageId: string, newText: string) => {
+      if (isLoading) return;
+      const messageIndex = messages.findIndex((m) => m.id === messageId);
+      if (messageIndex === -1) return;
+      const truncated = messages.slice(0, messageIndex) as UIMessage[];
+      setMessages(truncated);
+      sendMessage({ text: newText });
+    },
+    [messages, isLoading, setMessages, sendMessage]
+  );
+
+  const handleRegenerateMessage = useCallback(
+    (messageId: string) => {
+      if (isLoading) return;
+      const messageIndex = messages.findIndex((m) => m.id === messageId);
+      if (messageIndex === -1) return;
+      const truncated = messages.slice(0, messageIndex) as UIMessage[];
+      setMessages(truncated);
+      regenerate();
+    },
+    [messages, isLoading, setMessages, regenerate]
+  );
+
   return (
     <div className="flex flex-col h-full">
       {messages.length === 0 ? (
@@ -103,7 +127,13 @@ export function ChatArea({ conversationId, memories, onFirstMessage }: ChatAreaP
         <div className="flex-1 overflow-y-auto px-4">
           <div className="max-w-3xl mx-auto py-4">
             {messages.map((message) => (
-              <MessageBubble key={message.id} message={message as UIMessage} />
+              <MessageBubble
+                key={message.id}
+                message={message as UIMessage}
+                isLoading={isLoading}
+                onEdit={message.role === "user" ? handleEditMessage : undefined}
+                onRegenerate={message.role === "assistant" ? handleRegenerateMessage : undefined}
+              />
             ))}
             {isLoading && messages[messages.length - 1]?.role === "user" && (
               <div className="flex gap-3 py-4">
