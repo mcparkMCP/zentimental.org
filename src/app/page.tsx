@@ -75,7 +75,7 @@ export default function Home() {
         {activeId ? (
           <ChatArea
             key={activeId}
-            conversation={conversations.find((c) => c.id === activeId)!}
+            conversationId={activeId}
             memories={memories}
             onFirstMessage={handleFirstMessage}
           />
