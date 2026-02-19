@@ -3,7 +3,7 @@
 import { SidebarHeader } from "./SidebarHeader";
 import { ConversationItem } from "./ConversationItem";
 import { Conversation } from "@/types/conversation";
-import { Brain, Github, X } from "lucide-react";
+import { Brain, Database, Github, X } from "lucide-react";
 
 interface SidebarProps {
   conversations: Conversation[];
@@ -12,6 +12,7 @@ interface SidebarProps {
   onSelect: (id: string) => void;
   onDelete: (id: string) => void;
   onOpenMemories: () => void;
+  onOpenKnowledgeBase: () => void;
   isOpen: boolean;
   onClose: () => void;
 }
@@ -23,6 +24,7 @@ export function Sidebar({
   onSelect,
   onDelete,
   onOpenMemories,
+  onOpenKnowledgeBase,
   isOpen,
   onClose,
 }: SidebarProps) {
@@ -72,6 +74,13 @@ export function Sidebar({
           >
             <Brain size={16} />
             Memory Manager
+          </button>
+          <button
+            onClick={onOpenKnowledgeBase}
+            className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-[#2f2f2f] hover:text-white transition-colors"
+          >
+            <Database size={16} />
+            Knowledge Base
           </button>
           <a
             href="https://github.com/chaollapark/zentimental.org"

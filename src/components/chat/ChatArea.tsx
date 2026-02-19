@@ -11,6 +11,7 @@ import { Memory } from "@/types/memory";
 import { buildSystemPrompt } from "@/lib/system-prompt";
 import { getMessages, saveMessages } from "@/lib/conversation-store";
 import type { UIMessage } from "ai";
+import type { KBSearchResult } from "@/types/knowledge-base";
 
 interface ChatAreaProps {
   conversationId: string;
@@ -18,16 +19,37 @@ interface ChatAreaProps {
   onFirstMessage: (title: string) => void;
 }
 
+async function searchKnowledgeBase(query: string): Promise<string | null> {
+  try {
+    const res = await fetch("/api/knowledge-base/search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ query }),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const results: KBSearchResult[] = data.results ?? [];
+    if (results.length === 0) return null;
+
+    return results
+      .map((r) => `[Source: ${r.documentFilename}]\n${r.chunk.content}`)
+      .join("\n\n---\n\n");
+  } catch {
+    return null;
+  }
+}
+
 export function ChatArea({ conversationId, memories, onFirstMessage }: ChatAreaProps) {
   const hasSetTitle = useRef(false);
   const [input, setInput] = useState("");
   const systemPrompt = buildSystemPrompt(memories);
+  const kbContextRef = useRef<string | null>(null);
 
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
-        body: { systemPrompt },
+        body: () => ({ systemPrompt, kbContext: kbContextRef.current }),
       }),
     [systemPrompt]
   );
@@ -78,45 +100,28 @@ export function ChatArea({ conversationId, memories, onFirstMessage }: ChatAreaP
   }, [messages, onFirstMessage]);
 
   const handleSubmit = useCallback(
-    (e?: React.FormEvent) => {
+    async (e?: React.FormEvent) => {
       e?.preventDefault?.();
       if (!input.trim() || isLoading) return;
       const text = input;
       setInput("");
+
+      // Search knowledge base for relevant context before sending
+      const kbContext = await searchKnowledgeBase(text);
+      kbContextRef.current = kbContext;
+
       sendMessage({ text });
     },
     [input, isLoading, sendMessage]
   );
 
   const handleSuggestion = useCallback(
-    (text: string) => {
+    async (text: string) => {
+      const kbContext = await searchKnowledgeBase(text);
+      kbContextRef.current = kbContext;
       sendMessage({ text });
     },
     [sendMessage]
-  );
-
-  const handleEditMessage = useCallback(
-    (messageId: string, newText: string) => {
-      if (isLoading) return;
-      const messageIndex = messages.findIndex((m) => m.id === messageId);
-      if (messageIndex === -1) return;
-      const truncated = messages.slice(0, messageIndex) as UIMessage[];
-      setMessages(truncated);
-      sendMessage({ text: newText });
-    },
-    [messages, isLoading, setMessages, sendMessage]
-  );
-
-  const handleRegenerateMessage = useCallback(
-    (messageId: string) => {
-      if (isLoading) return;
-      const messageIndex = messages.findIndex((m) => m.id === messageId);
-      if (messageIndex === -1) return;
-      const truncated = messages.slice(0, messageIndex) as UIMessage[];
-      setMessages(truncated);
-      regenerate();
-    },
-    [messages, isLoading, setMessages, regenerate]
   );
 
   return (
@@ -127,13 +132,7 @@ export function ChatArea({ conversationId, memories, onFirstMessage }: ChatAreaP
         <div className="flex-1 overflow-y-auto px-4">
           <div className="max-w-3xl mx-auto py-4">
             {messages.map((message) => (
-              <MessageBubble
-                key={message.id}
-                message={message as UIMessage}
-                isLoading={isLoading}
-                onEdit={message.role === "user" ? handleEditMessage : undefined}
-                onRegenerate={message.role === "assistant" ? handleRegenerateMessage : undefined}
-              />
+              <MessageBubble key={message.id} message={message as UIMessage} />
             ))}
             {isLoading && messages[messages.length - 1]?.role === "user" && (
               <div className="flex gap-3 py-4">

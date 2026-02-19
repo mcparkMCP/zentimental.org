@@ -5,6 +5,7 @@ import { Menu } from "lucide-react";
 import { Sidebar } from "@/components/sidebar/Sidebar";
 import { ChatArea } from "@/components/chat/ChatArea";
 import { MemoryManager } from "@/components/memory/MemoryManager";
+import { KnowledgeBaseManager } from "@/components/knowledge-base/KnowledgeBaseManager";
 import { useConversations } from "@/hooks/useConversations";
 import { useMemories } from "@/hooks/useMemories";
 
@@ -23,6 +24,7 @@ export default function Home() {
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [memoryManagerOpen, setMemoryManagerOpen] = useState(false);
+  const [kbManagerOpen, setKbManagerOpen] = useState(false);
 
   const handleNewChat = useCallback(() => {
     newConversation();
@@ -53,6 +55,7 @@ export default function Home() {
         onSelect={selectConversation}
         onDelete={deleteConversation}
         onOpenMemories={() => setMemoryManagerOpen(true)}
+        onOpenKnowledgeBase={() => setKbManagerOpen(true)}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />
@@ -96,6 +99,11 @@ export default function Home() {
         onDeleteMemory={deleteMemory}
         onUpdateMemory={updateMemory}
         onClearMemories={clearMemories}
+      />
+
+      <KnowledgeBaseManager
+        isOpen={kbManagerOpen}
+        onClose={() => setKbManagerOpen(false)}
       />
     </div>
   );

@@ -4,3 +4,9 @@ export const CONVERSATIONS_KEY = "gpt4o-conversations";
 export const MESSAGES_KEY_PREFIX = "gpt4o-messages-";
 export const MEMORIES_KEY = "gpt4o-memories";
 export const TITLE_MAX_LENGTH = 50;
+
+// Knowledge Base constants
+export const KB_ACCEPTED_FILE_TYPES = ".pdf,.txt,.md,.csv,.json,.js,.ts,.jsx,.tsx,.py,.java,.c,.cpp,.h,.html,.css,.xml,.yaml,.yml,.toml,.sql,.sh,.rb,.go,.rs,.swift,.kt";
+export const KB_MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+export const KB_MAX_DOCUMENTS = 50;
+export const KB_TOP_K = 5;
