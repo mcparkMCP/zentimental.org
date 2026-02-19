@@ -3,7 +3,7 @@
 import { SidebarHeader } from "./SidebarHeader";
 import { ConversationItem } from "./ConversationItem";
 import { Conversation } from "@/types/conversation";
-import { Brain, X } from "lucide-react";
+import { Brain, Github, X } from "lucide-react";
 
 interface SidebarProps {
   conversations: Conversation[];
@@ -65,7 +65,7 @@ export function Sidebar({
             </p>
           )}
         </div>
-        <div className="p-3 border-t border-[#2f2f2f]">
+        <div className="p-3 border-t border-[#2f2f2f] space-y-1">
           <button
             onClick={onOpenMemories}
             className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-[#2f2f2f] hover:text-white transition-colors"
@@ -73,6 +73,15 @@ export function Sidebar({
             <Brain size={16} />
             Memory Manager
           </button>
+          <a
+            href="https://github.com/chaollapark/zentimental.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-[#2f2f2f] hover:text-white transition-colors"
+          >
+            <Github size={16} />
+            Contribute on GitHub
+          </a>
         </div>
       </aside>
     </>

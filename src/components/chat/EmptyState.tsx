@@ -1,6 +1,6 @@
 "use client";
 
-import { Bot } from "lucide-react";
+import { Bot, Github, Heart } from "lucide-react";
 
 interface EmptyStateProps {
   onSuggestion: (text: string) => void;
@@ -33,6 +33,16 @@ export function EmptyState({ onSuggestion }: EmptyStateProps) {
           </button>
         ))}
       </div>
+      <a
+        href="https://github.com/chaollapark/zentimental.org"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="mt-8 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#2f2f2f] text-sm text-gray-400 hover:border-[#10a37f] hover:text-[#10a37f] transition-colors"
+      >
+        <Github size={16} />
+        Open source — contribute on GitHub
+        <Heart size={14} />
+      </a>
     </div>
   );
 }
