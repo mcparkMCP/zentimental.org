@@ -39,9 +39,9 @@ export function ChatInput({ input, setInput, onSubmit, isLoading }: ChatInputPro
   );
 
   return (
-    <div className="border-t border-[#2f2f2f] bg-[#212121] p-4">
+    <div className="border-t border-[var(--theme-border,#2f2f2f)] bg-[var(--theme-bg,#212121)] p-4">
       <form onSubmit={onSubmit} className="max-w-3xl mx-auto relative">
-        <div className="flex items-end gap-2 bg-[#2f2f2f] rounded-2xl px-4 py-3">
+        <div className="flex items-end gap-2 bg-[var(--theme-input,#2f2f2f)] rounded-2xl px-4 py-3">
           <textarea
             ref={textareaRef}
             value={input}

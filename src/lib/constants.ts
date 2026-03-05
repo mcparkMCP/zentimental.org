@@ -12,3 +12,14 @@ export const KB_MAX_DOCUMENTS = 50;
 export const KB_TOP_K = 5;
 export const KB_CHUNK_SIZE = 1000;
 export const KB_CHUNK_OVERLAP = 200;
+
+// Persona constants
+export const PERSONAS_KEY = "gpt4o-personas";
+export const ACTIVE_PERSONA_KEY = "gpt4o-active-persona";
+
+// Theme constants
+export const THEME_KEY = "gpt4o-theme";
+
+// Story/petition constants
+export const MAX_STORY_LENGTH = 500;
+export const MAX_STORY_NAME_LENGTH = 50;

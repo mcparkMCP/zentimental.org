@@ -7,6 +7,7 @@ import {
   createConversation,
   deleteConversation as deleteConv,
   updateConversationTitle,
+  togglePinConversation,
 } from "@/lib/conversation-store";
 
 export function useConversations() {
@@ -49,6 +50,13 @@ export function useConversations() {
     );
   }, []);
 
+  const pinConversation = useCallback((id: string) => {
+    const pinned = togglePinConversation(id);
+    setConversations((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, pinned } : c))
+    );
+  }, []);
+
   const selectConversation = useCallback((id: string) => {
     setActiveId(id);
   }, []);
@@ -59,6 +67,7 @@ export function useConversations() {
     newConversation,
     deleteConversation,
     renameConversation,
+    pinConversation,
     selectConversation,
   };
 }

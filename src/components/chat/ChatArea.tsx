@@ -8,6 +8,7 @@ import { ChatInput } from "./ChatInput";
 import { EmptyState } from "./EmptyState";
 import { ScrollAnchor } from "./ScrollAnchor";
 import { Memory } from "@/types/memory";
+import { Persona } from "@/types/persona";
 import { buildSystemPrompt } from "@/lib/system-prompt";
 import { getMessages, saveMessages } from "@/lib/conversation-store";
 import type { UIMessage } from "ai";
@@ -16,6 +17,7 @@ import type { KBSearchResult } from "@/types/knowledge-base";
 interface ChatAreaProps {
   conversationId: string;
   memories: Memory[];
+  persona: Persona;
   onFirstMessage: (title: string) => void;
 }
 
@@ -39,10 +41,10 @@ async function searchKnowledgeBase(query: string): Promise<string | null> {
   }
 }
 
-export function ChatArea({ conversationId, memories, onFirstMessage }: ChatAreaProps) {
+export function ChatArea({ conversationId, memories, persona, onFirstMessage }: ChatAreaProps) {
   const hasSetTitle = useRef(false);
   const [input, setInput] = useState("");
-  const systemPrompt = buildSystemPrompt(memories);
+  const systemPrompt = buildSystemPrompt(memories, persona);
   const kbContextRef = useRef<string | null>(null);
 
   const transport = useMemo(
@@ -124,6 +126,43 @@ export function ChatArea({ conversationId, memories, onFirstMessage }: ChatAreaP
     [sendMessage]
   );
 
+  const handleEdit = useCallback(
+    (messageId: string, newText: string) => {
+      if (isLoading) return;
+      // Find the message index and truncate everything after it
+      const idx = messages.findIndex((m) => m.id === messageId);
+      if (idx === -1) return;
+
+      const truncated = messages.slice(0, idx);
+      setMessages(truncated as UIMessage[]);
+
+      // Send the edited message as new
+      setTimeout(async () => {
+        const kbContext = await searchKnowledgeBase(newText);
+        kbContextRef.current = kbContext;
+        sendMessage({ text: newText });
+      }, 50);
+    },
+    [messages, isLoading, setMessages, sendMessage]
+  );
+
+  const handleRegenerate = useCallback(
+    (messageId: string) => {
+      if (isLoading) return;
+      // Find the assistant message and remove it, then regenerate
+      const idx = messages.findIndex((m) => m.id === messageId);
+      if (idx === -1) return;
+
+      const truncated = messages.slice(0, idx);
+      setMessages(truncated as UIMessage[]);
+
+      setTimeout(() => {
+        regenerate();
+      }, 50);
+    },
+    [messages, isLoading, setMessages, regenerate]
+  );
+
   return (
     <div className="flex flex-col h-full">
       {messages.length === 0 ? (
@@ -132,11 +171,17 @@ export function ChatArea({ conversationId, memories, onFirstMessage }: ChatAreaP
         <div className="flex-1 overflow-y-auto px-4">
           <div className="max-w-3xl mx-auto py-4">
             {messages.map((message) => (
-              <MessageBubble key={message.id} message={message as UIMessage} />
+              <MessageBubble
+                key={message.id}
+                message={message as UIMessage}
+                onEdit={handleEdit}
+                onRegenerate={handleRegenerate}
+                isLoading={isLoading}
+              />
             ))}
             {isLoading && messages[messages.length - 1]?.role === "user" && (
               <div className="flex gap-3 py-4">
-                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#10a37f] flex items-center justify-center">
+                <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--theme-accent,#10a37f)] flex items-center justify-center">
                   <div className="flex gap-1">
                     <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
                     <span className="w-1.5 h-1.5 bg-white rounded-full animate-bounce" style={{ animationDelay: "150ms" }} />

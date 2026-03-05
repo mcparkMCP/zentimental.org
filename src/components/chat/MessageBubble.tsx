@@ -136,14 +136,14 @@ export function MessageBubble({ message, isLoading, onEdit, onRegenerate }: Mess
   return (
     <div className={`group/msg flex gap-3 py-4 ${isUser ? "justify-end" : ""}`}>
       {!isUser && (
-        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[#10a37f] flex items-center justify-center">
+        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--theme-accent,#10a37f)] flex items-center justify-center">
           <Bot size={18} className="text-white" />
         </div>
       )}
       <div
         className={`max-w-[80%] ${
           isUser
-            ? "bg-[#2f2f2f] rounded-3xl px-5 py-3 text-white"
+            ? "bg-[var(--theme-user-bubble,#2f2f2f)] rounded-3xl px-5 py-3 text-white"
             : "prose prose-invert max-w-none prose-pre:p-0 prose-pre:bg-transparent"
         }`}
       >

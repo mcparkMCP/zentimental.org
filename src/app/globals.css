@@ -9,10 +9,16 @@
 :root {
   --background: #212121;
   --foreground: #ececec;
+  --theme-bg: #212121;
+  --theme-sidebar: #171717;
+  --theme-input: #2f2f2f;
+  --theme-border: #2f2f2f;
+  --theme-accent: #10a37f;
+  --theme-user-bubble: #2f2f2f;
 }
 
 body {
-  background: var(--background);
+  background: var(--theme-bg);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
@@ -45,7 +51,7 @@ pre code.hljs {
 .prose {
   --tw-prose-body: #d1d5db;
   --tw-prose-headings: #fff;
-  --tw-prose-links: #10a37f;
+  --tw-prose-links: var(--theme-accent, #10a37f);
   --tw-prose-bold: #fff;
   --tw-prose-code: #e06c75;
   --tw-prose-pre-bg: transparent;

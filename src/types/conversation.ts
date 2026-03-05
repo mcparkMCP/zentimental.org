@@ -3,4 +3,5 @@ export interface Conversation {
   title: string;
   createdAt: number;
   updatedAt: number;
+  pinned?: boolean;
 }
